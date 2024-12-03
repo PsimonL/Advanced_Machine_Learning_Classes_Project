@@ -1,6 +1,6 @@
 # Project For "Advanced Machine Learning Subject"
 
-## Air Quality Prediction
+## Air Quality Prediction with LSTM
 
 ### Target:
 The target of this application is to provide accurate air quality predictions, enabling individuals to minimize exposure to harmful pollutants and make informed decisions for health and environmental sustainability.
