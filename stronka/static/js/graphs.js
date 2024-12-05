@@ -4,21 +4,10 @@ fromCurrency = document.querySelector(".from select"),
 toCurrency = document.querySelector(".to select");
 
 for (let i = 0; i < SelectGraph.length; i++) {
-    for(let currency_code in country_list){
+    for(let currency_code in city_list){
         let selected = i === 0 ? currency_code === "USD" ? "selected" : "" : currency_code === "PLN" ? "selected" : "";
         let optionTag = `<option value="${currency_code}" ${selected}>${currency_code}</option>`;
         SelectGraph[i].insertAdjacentHTML("beforeend", optionTag);
-    }
-    SelectGraph[i].addEventListener("change", e =>{
-        loadFlag(e.target);
-    });
-}
-function loadFlag(element){
-    for(let code in country_list){
-        if(code === element.value){
-            let flagTag = element.parentElement.querySelector("span");
-            flagTag.className = `fi fi-${country_list[code]}`;
-        }
     }
 }
 
@@ -35,20 +24,9 @@ graphButton.addEventListener("click", e =>{
     zmiana()
 });
 
-const exchangeIcon = document.querySelector("form .exchange");
-exchangeIcon.addEventListener("click", e=>{
-    e.preventDefault();
-    let temp = fromCurrency.value;
-    fromCurrency.value = toCurrency.value;
-    toCurrency.value = temp;
-    loadFlag(fromCurrency);
-    loadFlag(toCurrency);
-    zmiana()
-})
-
 function zmiana(){
     const TitleTxt = document.querySelector(".title-graph h4");
-    TitleTxt.innerText = `1.00 ${fromCurrency.value} =`
+    TitleTxt.innerText = `Daily air quality prediction for ${fromCurrency.value}:`
     roots[0].dispose()
     roots.shift()
     var root = am5.Root.new("chartdiv")
@@ -57,15 +35,6 @@ function zmiana(){
 }
 
 function wykres (root) {
-    if(fromCurrency.value == toCurrency.value){
-        alert("NIE WOLNO")
-        fromCurrency.value = "USD"
-        toCurrency.value = "PLN"
-        loadFlag(fromCurrency);
-        loadFlag(toCurrency);
-        const TitleTxt = document.querySelector(".title-graph h4");
-        TitleTxt.innerText = `1.00 ${fromCurrency.value} =`
-    }
     root.setThemes([am5themes_Animated.new(root)]);
     var chart = root.container.children.push(am5xy.XYChart.new(root, {
         panX: false,
