@@ -1,0 +1,45 @@
+# Ignorowanie plików wygenerowanych przez Pythona
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+
+# Środowisko wirtualne
+env/
+venv/
+ENV/
+.venv/
+.env/
+
+# Logi
+*.log
+
+# Pliki tymczasowe
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Flask specific
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# Ignorowanie konfiguracji prywatnych
+config.py
+*.env
+
+# Konfiguracje IDE
+.vscode/
+.idea/
+*.iml
+
+# Ignorowanie cache'ów
+*.cache
+*.coverage
+.cache/
+.tox/
+dist/
+build/
