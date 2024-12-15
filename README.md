@@ -89,19 +89,17 @@ can be found at the following path:
 stronka/Datasets/graphs/*training_loss.png
 ```
 
-Prediction results for every city:
-- Atlanta
-![dsd](stronka/Datasets/graphs/Atlanta_CO (ppm)_actual_vs_predicted.png)
-- Denver
-![C2_diagram_for_this_project](stronka/Datasets/graphs/img.png)
-- Los Angeles
-![]()
-- Phoenix
-![]()
-- Pittsburgh
-![]()
-- Seattle
-![]()
+Sample visualisation of results for prediction of Atlanta City:
+- CO
+![Atlanta CO results](stronka/Datasets/graphs/readme_helper/Atlanta_CO_(ppm)_actual_vs_predicted.png)
+- NO₂
+![Atlanta NO₂ results](stronka/Datasets/graphs/readme_helper/Atlanta_NO2_(ppb)_actual_vs_predicted.png)
+- O₃
+![Atlanta O₃ results](stronka/Datasets/graphs/readme_helper/Atlanta_O3_(ppm)_actual_vs_predicted.png)
+- PM2.5
+![Atlanta PM2.5 results](stronka/Datasets/graphs/readme_helper/Atlanta_PM2.5_(ug_m3_LC)_actual_vs_predicted.png)
+- SO₂
+![Atlanta SO₂ results](stronka/Datasets/graphs/readme_helper/Atlanta_SO2_(ppb)_actual_vs_predicted.png)
 
 
 #### App
