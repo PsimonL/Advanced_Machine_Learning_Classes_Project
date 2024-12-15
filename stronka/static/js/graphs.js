@@ -13,10 +13,20 @@ for (let i = 0; i < SelectGraph.length; i++) {
 
 var roots = []
 
-window.addEventListener("load", ()=>{
-    var root = am5.Root.new("chartdiv")
-    roots.push(root)
-    wykres(root)
+window.addEventListener("load", () => {
+    const charts = [
+        { id: "chartdiv_CO", metric: "CO (ppm)" },
+        { id: "chartdiv_NO2", metric: "NO2 (ppb)" },
+        { id: "chartdiv_O3", metric: "O3 (ppm)" },
+        { id: "chartdiv_PM25", metric: "PM2.5 (ug/m3 LC)" },
+        { id: "chartdiv_SO2", metric: "SO2 (ppb)" }
+    ];
+
+    charts.forEach(chart => {
+        var root = am5.Root.new(chart.id);
+        roots.push(root);
+        wykres(root, chart.metric);
+    });
 });
 
 graphButton.addEventListener("click", e =>{
@@ -24,18 +34,47 @@ graphButton.addEventListener("click", e =>{
     zmiana()
 });
 
-function zmiana(){
+function zmiana() {
     const TitleTxt = document.querySelector(".title-graph h4");
-    TitleTxt.innerText = `Daily air quality prediction for ${fromCurrency.value}:`
-    roots[0].dispose()
-    roots.shift()
-    var root = am5.Root.new("chartdiv")
-    roots.push(root)
-    wykres(root)
+    TitleTxt.innerText = `Daily air quality prediction for ${fromCurrency.value}:`;
+
+    roots.forEach(root => root.dispose());
+    roots = [];
+
+    const charts = [
+        { id: "chartdiv_CO", metric: "CO (ppm)" },
+        { id: "chartdiv_NO2", metric: "NO2 (ppb)" },
+        { id: "chartdiv_O3", metric: "O3 (ppm)" },
+        { id: "chartdiv_PM25", metric: "PM2.5 (ug/m3 LC)" },
+        { id: "chartdiv_SO2", metric: "SO2 (ppb)" }
+    ];
+
+    charts.forEach(chart => {
+        var root = am5.Root.new(chart.id);
+        roots.push(root);
+        wykres(root, chart.metric);
+    });
 }
 
-function wykres (root) {
+var absoluteMin = new Date("2023-09-13").getTime();
+var absoluteMax = new Date("2023-12-31").getTime();
+
+function wykres (root, metric) {
     root.setThemes([am5themes_Animated.new(root)]);
+    var title = root.container.children.push(am5.Label.new(root, {
+        text: `${metric}`,
+        fontSize: 24,
+        fontWeight: "bold",
+        textAlign: "center",
+        x: am5.percent(50),
+        y: -1,
+        fill: am5.color("#38B6FF"),
+        centerX: am5.percent(50),
+        paddingBottom: 100,
+    }));
+    root.container.setAll({
+        paddingTop: 20
+    });
     var chart = root.container.children.push(am5xy.XYChart.new(root, {
         panX: false,
         panY: false,
@@ -73,13 +112,15 @@ function wykres (root) {
         maxPosition: 0.99
     });
 
-    var firstColor = chart.get("colors").getIndex(0);
+    var color1 = chart.get("colors").getIndex(0);
+    var color2 = chart.get("colors").getIndex(4);
 
     var volumeSeries = chart.series.push(am5xy.LineSeries.new(root, {
+        name: "Real Value",
         clustered: false,
-        fill: firstColor,
-        stroke: firstColor,
-        valueYField: "value",
+        fill: color1,
+        stroke: color1,
+        valueYField: "real",
         valueXField: "date",
         xAxis: dateAxis,
         yAxis: volumeAxis,
@@ -89,16 +130,37 @@ function wykres (root) {
         })
     }));
 
+    var volumeSeries1 = chart.series.push(am5xy.LineSeries.new(root, {
+        name: "Predicted Value",
+        clustered: false,
+        fill: color2,
+        stroke: color2,
+        valueYField: "predicted",
+        valueXField: "date",
+        xAxis: dateAxis,
+        yAxis: volumeAxis,
+        legendValueText: "{valueY}",
+        tooltip: am5.Tooltip.new(root, {
+            labelText: "{valueY}"
+        })
+    }));
+
+    var volumeLegend = volumeAxis.axisHeader.children.push(
+        am5.Legend.new(root, {
+            useDefaultMarker: true
+        })
+    );
+    volumeLegend.data.setAll([volumeSeries]);
+
+    var volumeLegend1 = volumeAxis.axisHeader.children.push(
+        am5.Legend.new(root, {
+            useDefaultMarker: true
+        })
+    );
+    volumeLegend1.data.setAll([volumeSeries1]);
+
     chart.leftAxesContainer.set("layout", root.verticalLayout);
-
-
-    // Add cursor
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
     chart.set("cursor", am5xy.XYCursor.new(root, {}))
-
-
-    // Add scrollbar
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
     var scrollbar = chart.set("scrollbarX", am5xy.XYChartScrollbar.new(root, {
         orientation: "horizontal",
         height: 50
@@ -119,8 +181,7 @@ function wykres (root) {
     );
 
     var sbSeries = scrollbar.chart.series.push(am5xy.LineSeries.new(root, {
-
-        valueYField: "value",
+        valueYField: "real",
         valueXField: "date",
         xAxis: sbDateAxis,
         yAxis: sbVolumeAxis
@@ -131,24 +192,42 @@ function wykres (root) {
         fillOpacity: 0.3
     });
 
+    var sbSeries1 = scrollbar.chart.series.push(am5xy.LineSeries.new(root, {
+        valueYField: "predicted",
+        valueXField: "date",
+        xAxis: sbDateAxis,
+        yAxis: sbVolumeAxis
+    }));
+
+    sbSeries1.fills.template.setAll({
+        visible: true,
+        fillOpacity: 0.3
+    });
+
     function loadData(min, max, side) {
-        min = am5.time.round(new Date(min), 1).getTime();
         var minu = new Date(min).toISOString().slice(0, 10);
         var maxu = new Date(max).toISOString().slice(0, 10);
-        console.log(maxu)
-        var url = `https://api.frankfurter.app/${minu}..${maxu}?from=${fromCurrency.value}&to=${toCurrency.value}`;
-        // Handle loaded data
+        var city = fromCurrency.value;
+        var url = `/api/data/live?city=${city}&metric=${metric}&start=${minu}&end=${maxu}`;
         am5.net.load(url).then(function (result) {
-
-            // Parse loaded data
-            var jsonCurrencyData = am5.JSONParser.parse(result.response)
+            var jsonLiveData = am5.JSONParser.parse(result.response);
             var data = [];
-            for (const [key, value] of Object.entries(
-                jsonCurrencyData["rates"]
-            )) {
-                pom = new Date(key.slice(0, 4), parseInt(key.slice(5, 7)) - 1, parseInt(key.slice(8, 10)), 0, 0, 0, 0).getTime()
-                data.push({"date": pom, "value": value[toCurrency.value]});
+            for (const entry of jsonLiveData) {
+                var pom = new Date(
+                    entry.date.slice(0, 4),
+                    parseInt(entry.date.slice(5, 7)) - 1,
+                    parseInt(entry.date.slice(8, 10))
+                ).getTime();
+                data.push({
+                    date: pom,
+                    real: entry[metric],
+                    predicted: entry[`predicted_${metric}`]
+                });
             }
+            console.log(result.response);
+            console.log(data);
+
+            data.sort((a, b) => a.date - b.date);
 
             var processor = am5.DataProcessor.new(root, {
                 numericFields: ["date", "value"]
@@ -157,65 +236,73 @@ function wykres (root) {
             var start = dateAxis.get("start");
             var end = dateAxis.get("end");
 
-            // will hold first/last dates of each series
             var seriesFirst = {};
             var seriesLast = {};
 
-            // Set data
             if (side == "none") {
                 if (data.length > 0) {
                     dateAxis.set("min", min);
                     dateAxis.set("max", max);
-                    dateAxis.setPrivate("min", min);   // needed in order not to animate
-                    dateAxis.setPrivate("max", max);   // needed in order not to animate
-
+                    dateAxis.setPrivate("min", min);
+                    dateAxis.setPrivate("max", max);
                     volumeSeries.data.setAll(data);
+                    volumeSeries1.data.setAll(data);
                     sbSeries.data.setAll(data);
+                    sbSeries1.data.setAll(data);
                     dateAxis.zoom(0, 1, 0);
                 }
             } else if (side == "left") {
-                // save dates of first items so that duplicates would not be added
                 seriesFirst[volumeSeries.uid] = volumeSeries.data.getIndex(0).date;
                 seriesFirst[sbSeries.uid] = sbSeries.data.getIndex(0).date;
+                seriesFirst[volumeSeries1.uid] = volumeSeries1.data.getIndex(0).date;
+                seriesFirst[sbSeries1.uid] = sbSeries1.data.getIndex(0).date;
+
                 for (var i = data.length - 1; i >= 0; i--) {
                     var date = data[i].date;
-                    // only add if first items date is bigger then newly added items date
                     if (seriesFirst[volumeSeries.uid] > date) {
                         volumeSeries.data.unshift(data[i]);
                     }
                     if (seriesFirst[sbSeries.uid] > date) {
                         sbSeries.data.unshift(data[i]);
                     }
+                    if (seriesFirst[volumeSeries1.uid] > date) {
+                        volumeSeries1.data.unshift(data[i]);
+                    }
+                    if (seriesFirst[sbSeries1.uid] > date) {
+                        sbSeries1.data.unshift(data[i]);
+                    }
                 }
 
-                // update axis min
                 min = Math.max(min, absoluteMin);
                 dateAxis.set("min", min);
-                dateAxis.setPrivate("min", min); // needed in order not to animate
-                // recalculate start and end so that the selection would remain
+                dateAxis.setPrivate("min", min);
                 dateAxis.set("start", 0);
                 dateAxis.set("end", (end - start) / (1 - start));
             } else if (side == "right") {
-                // save dates of last items so that duplicates would not be added
                 seriesLast[volumeSeries.uid] = volumeSeries.data.getIndex(volumeSeries.data.length - 1).date;
                 seriesLast[sbSeries.uid] = sbSeries.data.getIndex(sbSeries.data.length - 1).date;
+                seriesLast[volumeSeries1.uid] = volumeSeries1.data.getIndex(volumeSeries.data.length - 1).date;
+                seriesLast[sbSeries1.uid] = sbSeries1.data.getIndex(sbSeries.data.length - 1).date;
 
                 for (var i = 0; i < data.length; i++) {
                     var date = data[i].date;
-                    // only add if last items date is smaller then newly added items date
                     if (seriesLast[volumeSeries.uid] < date) {
                         volumeSeries.data.push(data[i]);
                     }
                     if (seriesLast[sbSeries.uid] < date) {
                         sbSeries.data.push(data[i]);
                     }
+                    if (seriesLast[volumeSeries1.uid] < date) {
+                        volumeSeries1.data.push(data[i]);
+                    }
+                    if (seriesLast[sbSeries1.uid] < date) {
+                        sbSeries1.data.push(data[i]);
+                    }
                 }
-                // update axis max
                 max = Math.min(max, absoluteMax);
                 dateAxis.set("max", max);
-                dateAxis.setPrivate("max", max); // needed in order not to animate
+                dateAxis.setPrivate("max", max);
 
-                // recalculate start and end so that the selection would remain
                 dateAxis.set("start", start / end);
                 dateAxis.set("end", 1);
             }
@@ -232,36 +319,14 @@ function wykres (root) {
         var min = dateAxis.getPrivate("min");
         var max = dateAxis.getPrivate("max");
 
-        // if start is less than 0, means we are panning to the right, need to load data to the left (earlier days)
         if (start < 0) {
             loadData(selectionMin, min, "left");
         }
-        // if end is bigger than 1, means we are panning to the left, need to load data to the right (later days)
         if (end > 1) {
             loadData(max, selectionMax, "right");
         }
     }
 
-    var currentDate = new Date();
-    if(currentDate.getHours() < 16)
-        currentDate.setDate(currentDate.getDate() - 1)
-    // initially load 50 days
-    var dzien = currentDate.getDay()
-    if (dzien == 0) {
-        dzien = 7
-    }
-    while (dzien > 5) {
-        currentDate.setDate(currentDate.getDate() - 1)
-        max = currentDate.getTime()
-        dzien--
-    }
-    var min = currentDate.getTime() - am5.time.getDuration("day", 50);
-    var max = currentDate.getTime()
-    // limit to the data's extremes
-    var absoluteMax = max;
-    var absoluteMin = new Date(1999, 0, 4, 16, 0, 0, 0);
-
-    // load data when panning ends
     chart.events.on("panended", function () {
         loadSomeData();
     });
@@ -269,8 +334,6 @@ function wykres (root) {
 
     var wheelTimeout;
     chart.events.on("wheelended", function () {
-        // load data with some delay when wheel ends, as this is event is fired a lot
-        // if we already set timeout for loading, dispose it
         if (wheelTimeout) {
             wheelTimeout.dispose();
         }
@@ -280,8 +343,9 @@ function wykres (root) {
         }, 50);
     });
 
-    // load some initial data
-    loadData(min, max, "none");
+    var oneWeekBack = absoluteMax - am5.time.getDuration("day", 7);
+
+    loadData(oneWeekBack, absoluteMax, "none");
 
     chart.appear(1000, 500);
 };
