@@ -89,17 +89,42 @@ can be found at the following path:
 stronka/Datasets/graphs/*training_loss.png
 ```
 
-Sample visualisation of results for prediction of Atlanta City:
-- CO
+Sample visualisation of results for prediction of Atlanta city:
+- CO results
 ![Atlanta CO results](stronka/Datasets/graphs/readme_helper/Atlanta_CO_(ppm)_actual_vs_predicted.png)
-- NO₂
+
+
+- NO₂ results
 ![Atlanta NO₂ results](stronka/Datasets/graphs/readme_helper/Atlanta_NO2_(ppb)_actual_vs_predicted.png)
-- O₃
+
+ 
+- O₃ results
 ![Atlanta O₃ results](stronka/Datasets/graphs/readme_helper/Atlanta_O3_(ppm)_actual_vs_predicted.png)
-- PM2.5
+
+ 
+- PM2.5 results
 ![Atlanta PM2.5 results](stronka/Datasets/graphs/readme_helper/Atlanta_PM2.5_(ug_m3_LC)_actual_vs_predicted.png)
-- SO₂
+
+ 
+- SO₂ results
 ![Atlanta SO₂ results](stronka/Datasets/graphs/readme_helper/Atlanta_SO2_(ppb)_actual_vs_predicted.png)
 
+
+Overall, the results look good. The model accurately captures trends in the predicted data. The quality and accuracy of the fitting in characteristic points, such as local extremes on the air quality index chart, could be improved.
+The model predicted results within the date range: 
+> [2023-09-15 : 2024-01-01]
+
+The prediction was made using purely historical data, but based on the following approach: 
+we have data from several past years, for example, 3 years, i.e., the date range from ```[X, Y]```. 
+We train the data on the period let's say of 2 years: ```[X, X+2 years]```.
+Then predict the data for the period let's say of 1 year: ```[Y, Y+1 year]```. 
+This approach allows us to assess how the model performs in real-world conditions.  
+Real-time predictions would require integration with a large amount of quality data from sensors 
+or possibly some commercial API in a paid model.  
+Additionally, computational resources would need to be increased for such a model to work in real-time. Currently, the model runs on a local CPU:
+```python
+model.load_state_dict(torch.load('./stronka/PT/O3_PT_lstm_model.pth', map_location=torch.device('cpu')))
+```
+However, scaling it to a very high computational performance will not be difficult.
 
 #### App
