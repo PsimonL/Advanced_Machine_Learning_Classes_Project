@@ -128,3 +128,9 @@ model.load_state_dict(torch.load('./stronka/PT/O3_PT_lstm_model.pth', map_locati
 However, scaling it to a very high computational performance will not be difficult.
 
 #### App
+The application encapsulates the model's functionality and the ability to predict air quality in the form of a convenient interface and a simple API. The application is built using Flask and Vanilla JS.
+Sample screenshots from user interface:  
+![User interface 1](stronka/Datasets/graphs/readme_helper/ui_s1.png)  
+![User interface 2](stronka/Datasets/graphs/readme_helper/ui_s1.png)  
+
+:)
