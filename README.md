@@ -55,7 +55,7 @@ LSTM (Long Short-Term Memory) networks are a type of Recurrent Neural Network (R
 That is why this type of model is perfect fit (also widely used) in Air Quality analysis.  
 Air quality data typically consists of time-series sets, where the measurements (CO, NO₂, O₃, PM2.5, SO₂) at each time step depend on previous observations. 
 Unlike traditional RNNs, LSTM networks have specialized memory cells that allow them to remember information over long periods.  
-Also vanishing gradient is an important issue to address. It's and issue where gradients become too small during backpropagation process, making it difficult to learn long-range dependencies.  
+Also vanishing gradient is an important issue to address. It's an issue where gradients become too small during backpropagation process, making it difficult to learn long-range dependencies.  
 Preventing from occurring gradient problems is essential for good air quality prediction, where seasonal patterns, weather conditions, and pollution trends evolve over given periods of time. 
 This is perfectly solved by LSTM architecture, which should improve prediction accuracy.
 
