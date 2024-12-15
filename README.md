@@ -23,7 +23,7 @@ Air Quality Factors Monitored in Major U.S. Cities
 > Denver, Los Angeles, Phoenix, Pittsburgh, Seattle
 ---
 Source of data:
-> [United States Environmental Protection Agency]([https://en.wikipedia.org/wiki/Air_quality_index](https://www.epa.gov/outdoor-air-quality-data))
+[United States Environmental Protection Agency]([https://en.wikipedia.org/wiki/Air_quality_index](https://www.epa.gov/outdoor-air-quality-data))
 
 #### Key Air Quality Indicators
 Factors taken into consideration during prediction process can be seen in the table below:
