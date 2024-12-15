@@ -22,17 +22,21 @@ Air Quality Factors Monitored in Major U.S. Cities
 **Cities**:  
 > Denver, Los Angeles, Phoenix, Pittsburgh, Seattle
 ---
+Source of data:
+> [WYPELNIC](https://en.wikipedia.org/wiki/Air_quality_index)
 
 #### Key Air Quality Indicators
 Factors taken into consideration during prediction process can be seen in the table below:
 
-| **Factor** | **Unit**                           | **Source**                                                                            | **Health Impact**                                                                                        | **Air Quality Standard (USA)**                        | **Environmental Impact**                                                 |
-|------------|------------------------------------|---------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------|
-| **CO**     | Parts per million (ppm)            | Fossil fuel combustion (vehicles, furnaces, power plants)                             | Reduces oxygen delivery in the body, leading to hypoxia                                                  | 9 ppm (8-hour average); 35 ppm (1-hour average)       | Low direct effect, may indirectly contribute to ground-level ozone       |
-| **NO₂**    | Parts per billion (ppb)            | Vehicle emissions, fuel combustion in power plants and industry                       | Irritates respiratory pathways, increases asthma risk, and lung infections                               | 53 ppb (annual average); 100 ppb (1-hour average)     | Contributes to photochemical smog and acid rain formation                |
-| **O₃**     | Parts per million (ppm)            | Formed secondary to reactions between NOₓ and VOCs under sunlight                     | Irritates respiratory pathways, causes coughing, and impairs lung function                               | 0.070 ppm (8-hour average)                            | Toxic to plants, reduces agricultural yields                             |
-| **PM2.5**  | Micrograms per cubic meter (µg/m³) | Fossil fuel combustion, industry, vehicle emissions, natural events (e.g., wildfires) | Penetrates deep into lungs and bloodstream, increasing risks of heart, respiratory diseases, and cancers | 12 µg/m³ (annual average); 35 µg/m³ (24-hour average) | Reduces visibility, harms aquatic and terrestrial ecosystems             |
-| **SO₂**    | Parts per billion (ppb)            | Combustion of sulfur-rich fossil fuels (coal), oil refining, volcanic activity        | Irritates respiratory pathways, triggers asthma attacks                                                  | 75 ppb (1-hour average)                               | Major contributor to acid rain, damaging plants, soils, and water bodies |
+| **Factor**                           | **Unit**                           | **Source**                                                                            | **Health Impact**                                                                                        | **Air Quality Standard (USA)**                        | **Environmental Impact**                                                 |
+|--------------------------------------|------------------------------------|---------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------|
+| **CO (Carbon Monoxide)**             | Parts per million (ppm)            | Fossil fuel combustion (vehicles, furnaces, power plants)                             | Reduces oxygen delivery in the body, leading to hypoxia                                                  | 9 ppm (8-hour average); 35 ppm (1-hour average)       | Low direct effect, may indirectly contribute to ground-level ozone       |
+| **NO₂ (Nitrogen Dioxide)**           | Parts per billion (ppb)            | Vehicle emissions, fuel combustion in power plants and industry                       | Irritates respiratory pathways, increases asthma risk, and lung infections                               | 53 ppb (annual average); 100 ppb (1-hour average)     | Contributes to photochemical smog and acid rain formation                |
+| **O₃ (Ozone)**                       | Parts per million (ppm)            | Formed secondary to reactions between NOₓ and VOCs under sunlight                     | Irritates respiratory pathways, causes coughing, and impairs lung function                               | 0.070 ppm (8-hour average)                            | Toxic to plants, reduces agricultural yields                             |
+| **PM2.5 (Particulate Matter PM2.5)** | Micrograms per cubic meter (µg/m³) | Fossil fuel combustion, industry, vehicle emissions, natural events (e.g., wildfires) | Penetrates deep into lungs and bloodstream, increasing risks of heart, respiratory diseases, and cancers | 12 µg/m³ (annual average); 35 µg/m³ (24-hour average) | Reduces visibility, harms aquatic and terrestrial ecosystems             |
+| **SO₂ (Sulfur Dioxide)**             | Parts per billion (ppb)            | Combustion of sulfur-rich fossil fuels (coal), oil refining, volcanic activity        | Irritates respiratory pathways, triggers asthma attacks                                                  | 75 ppb (1-hour average)                               | Major contributor to acid rain, damaging plants, soils, and water bodies |
+
+[USA Regulations](https://www.epa.gov/criteria-air-pollutants)
 
 European Air Quality Standards (for reference):
 - **CO**: 10 ppm (8-hour average)  
@@ -41,8 +45,63 @@ European Air Quality Standards (for reference):
 - **PM2.5**: Annual average ≤ 25 µg/m³ (WHO recommends 5 µg/m³)  
 - **SO₂**: 1-hour concentration ≤ 350 µg/m³ (~132 ppb)  
 
-#### Air Quality 
+[EU Regulations](https://www.eea.europa.eu/themes/air/air-quality)  
 
+Regulations for O₃ and SO₂ are much stricter in the USA than in EU. 
+But on the other hand CO, NO₂ and PM2.5 are much stricter in EU than in the USA.  
+
+#### Model structure chosen
+LSTM (Long Short-Term Memory) networks are a type of Recurrent Neural Network (RNN) specifically designed to address the challenges associated with learning from time-series data.
+That is why this type of model is perfect fit (also widely used) in Air Quality analysis.  
+Air quality data typically consists of time-series sets, where the measurements (CO, NO₂, O₃, PM2.5, SO₂) at each time step depend on previous observations. 
+Unlike traditional RNNs, LSTM networks have specialized memory cells that allow them to remember information over long periods.  
+Also vanishing gradient is an important issue to address. It's and issue where gradients become too small during backpropagation process, making it difficult to learn long-range dependencies.  
+Preventing from occurring gradient problems is essential for good air quality prediction, where seasonal patterns, weather conditions, and pollution trends evolve over given periods of time. 
+This is perfectly solved by LSTM architecture, which should improve prediction accuracy.
+
+
+| **Parameter**     | **Description**                                                                                         | **Example**    |
+|-------------------|---------------------------------------------------------------------------------------------------------|----------------|
+| `input_size`      | The number of features in the input data.                                                               | 1              |
+| `hidden_size`     | The number of units in the LSTM hidden layer.                                                           | 16             |
+| `num_layers`      | The number of LSTM layers.                                                                              | 2              |
+| `output_size`     | The number of units in the output layer.                                                                | 1              |
+| `dropout`         | The proportion of LSTM units that are randomly dropped during training to prevent overfitting.          | 0.2            |
+| `batch_first`     | Specifies if the input and output tensors should be in the format (batch_size, seq_length, input_size). | `True`         |
+| `learning_rate`   | The learning rate for model training.                                                                   | XXXX (0.001)   |
+| `optimizer`       | The optimization algorithm used for updating weights.                                                   | XXXX (Adam)    |
+| `epochs`          | The number of training epochs (passes through the entire dataset).                                      | 10,15,25,35,50 |
+| `sequence_length` | The number of time steps (data points) the model takes as input.                                        | XXXX (30)      |
+
+
+#### Predictions
+All used datasets can be found at the following path:  
+```
+stronka/Datasets/*.csv
+```
+The results comparing the actual state with the predicted state:
+```
+stronka/Datasets/graphs/*actual_vs_predicted.png
+```
+The training strategy, i.e., the most important indicator that informs how well the model fits the training data, 
+can be found at the following path:
+```
+stronka/Datasets/graphs/*training_loss.png
+```
+
+Prediction results for every city:
+- Atlanta
+![dsd](stronka/Datasets/graphs/Atlanta_CO (ppm)_actual_vs_predicted.png)
+- Denver
+![C2_diagram_for_this_project](stronka/Datasets/graphs/img.png)
+- Los Angeles
+![]()
+- Phoenix
+![]()
+- Pittsburgh
+![]()
+- Seattle
+![]()
 
 
 #### App
