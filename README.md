@@ -131,7 +131,11 @@ However, scaling it to a very high computational performance will not be difficu
 #### App
 The application encapsulates the model's functionality and the ability to predict air quality in the form of a convenient interface and a simple API. The application is built using Flask and Vanilla JS.
 Sample screenshots from user interface:  
-![User interface 1](stronka/Datasets/graphs/readme_helper/ui_s1.png)  
-![User interface 2](stronka/Datasets/graphs/readme_helper/ui_s1.png)  
+![User interface 1](stronka/Datasets/graphs/readme_helper/ui_s1.png)
+![User interface 2](stronka/Datasets/graphs/readme_helper/ui_s2.png)
+![User interface 3](stronka/Datasets/graphs/readme_helper/ui_s3.png)
+![User interface 4](stronka/Datasets/graphs/readme_helper/ui_s4.png)
+![User interface 5](stronka/Datasets/graphs/readme_helper/ui_s5.png)
+![User interface 6](stronka/Datasets/graphs/readme_helper/ui_s6.png)
 
 :)
