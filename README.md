@@ -19,6 +19,7 @@ This application will allow users to view detailed charts of pollutant levels fo
 
 ### Results
 Air Quality Factors Monitored in Major U.S. Cities
+
 **Cities**:  
 > Denver, Los Angeles, Phoenix, Pittsburgh, Seattle
 ---
@@ -68,10 +69,10 @@ This is perfectly solved by LSTM architecture, which should improve prediction a
 | `output_size`     | The number of units in the output layer.                                                                | 1              |
 | `dropout`         | The proportion of LSTM units that are randomly dropped during training to prevent overfitting.          | 0.2            |
 | `batch_first`     | Specifies if the input and output tensors should be in the format (batch_size, seq_length, input_size). | `True`         |
-| `learning_rate`   | The learning rate for model training.                                                                   | XXXX (0.001)   |
-| `optimizer`       | The optimization algorithm used for updating weights.                                                   | XXXX (Adam)    |
+| `learning_rate`   | The learning rate for model training.                                                                   | 0.001          |
+| `optimizer`       | The optimization algorithm used for updating weights.                                                   | Adam           |
 | `epochs`          | The number of training epochs (passes through the entire dataset).                                      | 10,15,25,35,50 |
-| `sequence_length` | The number of time steps (data points) the model takes as input.                                        | XXXX (30)      |
+| `sequence_length` | The number of time steps (data points) the model takes as input.                                        | 3              |
 
 
 #### Predictions
