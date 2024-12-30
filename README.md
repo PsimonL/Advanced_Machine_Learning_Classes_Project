@@ -139,3 +139,9 @@ Sample screenshots from user interface:
 ![User interface 6](stronka/Datasets/graphs/readme_helper/ui_s6.png)
 
 :)
+
+#### Project Executors
+- Mateusz Potaśnik
+- Szymon Rogowski
+- Bartosz Szymański
+- Bartosz Pękała 
